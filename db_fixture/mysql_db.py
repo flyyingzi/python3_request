@@ -2,7 +2,8 @@
 import pymysql.cursors
 import os
 import configparser as cparser
-
+import json
+from bson import json_util
 
 # ======== Reading db_config.ini setting ===========
 base_dir = str(os.path.dirname(os.path.dirname(__file__)))
@@ -10,8 +11,8 @@ base_dir = base_dir.replace('\\', '/')
 file_path = base_dir + "/db_config.ini"
 
 cf = cparser.ConfigParser()
-
 cf.read(file_path)
+
 host = cf.get("mysqlconf", "host")
 port = cf.get("mysqlconf", "port")
 db   = cf.get("mysqlconf", "db_name")
@@ -51,16 +52,40 @@ class DB:
         key   = ','.join(table_data.keys())
         value = ','.join(table_data.values())
         real_sql = "INSERT INTO " + table_name + " (" + key + ") VALUES (" + value + ")"
-        #print(real_sql)
+        print(real_sql+'--')
 
         with self.connection.cursor() as cursor:
             cursor.execute(real_sql)
-
         self.connection.commit()
 
+        # self.connection.cursor()
+
+    # select sql
+    def search(self, table_name, query, where = ''):
+        sql = 'select ' + query + ' ' + 'from ' + table_name + where +' ; '
+        print(sql)
+        cursor = self.connection.cursor() 
+        cursor.execute(sql)
+        self.connection.commit()
+
+        result = cursor.fetchall()
+         
+        for dict in result:
+            result1 = dict
+            
+        print(result1)
+        
+        tet = json.dumps(result1, default=json_util.default)
+        print(tet)
+        return result
+    #return sql 
+    def return_search(self):
+        reus = self.search()
+        return name
     # close database
     def close(self):
         self.connection.close()
+    
 
     # init data
     def init_data(self, datas):
@@ -74,11 +99,12 @@ class DB:
 if __name__ == '__main__':
 
     db = DB()
-    table_name = "sign_event"
-    data = {'id':1,'name':'红米','`limit`':2000,'status':1,'address':'北京会展中心','start_time':'2016-08-20 00:25:42'}
-    table_name2 = "sign_guest"
-    data2 = {'realname':'alen','phone':12312341234,'email':'alen@mail.com','sign':0,'event_id':1}
+    #table_name = "sign_event"
+    #data = {'id':1,'name':'红米','`limit`':2000,'status':1,'address':'北京会展中心','start_time':'2016-08-20 00:25:42'}
+    #table_name2 = "sign_guest"
+    #data2 = {'realname':'alen','phone':12312341234,'email':'alen@mail.com','sign':0,'event_id':1}
 
-    db.clear(table_name)
-    db.insert(table_name, data)
-    db.close()
+    #db.clear(table_name)
+    #db.insert(table_name, data)
+    #db.close()
+    db.return_search

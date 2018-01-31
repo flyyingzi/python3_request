@@ -13,7 +13,8 @@ class AddGuessTest(unittest.TestCase):
         self.base_url = "http://127.0.0.1:8000/api/add_guest/"
 
     def tearDown(self):
-        print(self.result)
+        # print(self.result)
+        pass
 
     def test_add_guest_all_null(self):
         ''' 参数为空 '''
@@ -52,7 +53,7 @@ class AddGuessTest(unittest.TestCase):
         payload = {'eid':4,'realname':'tom','phone':13711001100}
         r = requests.post(self.base_url,data=payload)
         self.result = r.json()
-        self.assertEqual(self.result['status'], 10025)
+                
         self.assertEqual(self.result['message'], 'event has started')
 
     def test_add_guest_phone_repeat(self):
